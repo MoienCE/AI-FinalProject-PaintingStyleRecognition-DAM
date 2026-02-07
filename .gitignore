@@ -1,6 +1,12 @@
-data/
+data/processed/*
+!data/processed/notes.txt
 
-src/models/
+data/raw/*
+!data/raw/notes.txt
+
+src/models/*
+!src/models/notes.txt
+
 
 *.pt
 *.pth

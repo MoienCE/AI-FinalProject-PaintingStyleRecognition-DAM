@@ -1,5 +1,6 @@
 data/processed/*
 !data/processed/notes.txt
+!data/processed/splits/
 
 data/raw/*
 !data/raw/notes.txt

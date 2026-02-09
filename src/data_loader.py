@@ -1,93 +1,123 @@
 import os
-import shutil
-import random
 import pandas as pd
-from glob import glob
-from tqdm import tqdm
+from PIL import Image
+import torch
+from torch.utils.data import Dataset, DataLoader
+from torchvision import transforms
 
-# --- Configuration ---
-# Path to the raw dataset
-RAW_DATA_DIR = os.path.join('data', 'raw') 
-
-# Path where processed/balanced data will be saved
-PROCESSED_DATA_DIR = os.path.join('data', 'processed')
-
-# Number of images to sample per style to balance the dataset
-SAMPLES_PER_CLASS = 400
-
-def balance_and_process_dataset():
+class ArtDataset(Dataset):
     """
-    Reads the raw dataset, samples a fixed number of images per class to balance the data,
-    and saves the processed dataset along with a metadata CSV file.
+    Custom Dataset for loading Art images.
+    Reads paths and labels from the processed CSV files (train/val/test).
     """
-    # 1. Check if raw data exists
-    if not os.path.exists(RAW_DATA_DIR):
-        print(f"Error: Raw data directory '{RAW_DATA_DIR}' not found. Please check your path.")
-        return
+    def __init__(self, csv_file, root_dir, transform=None):
+        self.data_frame = pd.read_csv(csv_file)
+        self.root_dir = root_dir
+        self.transform = transform
+        
+        # Check if file exists
+        if not os.path.exists(csv_file):
+            raise FileNotFoundError(f"CSV file not found: {csv_file}")
 
-    # 2. Clean up the processed directory (remove if exists to start fresh)
-    if os.path.exists(PROCESSED_DATA_DIR):
-        print(f"Cleaning existing processed directory: {PROCESSED_DATA_DIR}")
-        shutil.rmtree(PROCESSED_DATA_DIR)
-    os.makedirs(PROCESSED_DATA_DIR)
+    def __len__(self):
+        return len(self.data_frame)
 
-    # 3. Identify style folders (classes)
-    # List directories only, ignoring hidden files or zips
-    style_folders = [d for d in os.listdir(RAW_DATA_DIR) if os.path.isdir(os.path.join(RAW_DATA_DIR, d))]
-    print(f"Found {len(style_folders)} styles in raw data.")
-    
-    metadata = []
-    
-    # 4. Iterate over each style and sample images
-    for style in tqdm(style_folders, desc="Processing Styles"):
-        style_path = os.path.join(RAW_DATA_DIR, style)
+    def __getitem__(self, idx):
+        if torch.is_tensor(idx):
+            idx = idx.tolist()
+
+        # Get row data
+        row = self.data_frame.iloc[idx]
         
-        # Find all valid image files (jpg, jpeg, png)
-        # Using glob to handle different extensions
-        images = glob(os.path.join(style_path, '*.jpg')) + \
-                 glob(os.path.join(style_path, '*.jpeg')) + \
-                 glob(os.path.join(style_path, '*.png'))
+        # Construct image path using column name 'image_path' (Safer than index)
+        img_rel_path = row['image_path'] 
+        img_path = os.path.join(self.root_dir, img_rel_path)
         
-        # Sampling Strategy: Undersampling
-        if len(images) < SAMPLES_PER_CLASS:
-            # If a class has fewer images than required, take all of them
-            print(f"Warning: Style '{style}' has only {len(images)} images (Target: {SAMPLES_PER_CLASS}). All selected.")
-            selected_images = images
-        else:
-            # Randomly sample the target number of images
-            selected_images = random.sample(images, SAMPLES_PER_CLASS)
-            
-        # Create destination folder for this style
-        dest_style_folder = os.path.join(PROCESSED_DATA_DIR, style)
-        os.makedirs(dest_style_folder, exist_ok=True)
-        
-        # Copy selected images and record metadata
-        for img_path in selected_images:
-            file_name = os.path.basename(img_path)
-            dest_path = os.path.join(dest_style_folder, file_name)
-            
-            # Copy file
-            shutil.copy(img_path, dest_path)
-            
-            # Append to metadata list (relative path is better for portability)
-            metadata.append({
-                'image_path': os.path.join('data', 'processed', style, file_name),
-                'style': style,
-                'original_filename': file_name
-            })
-            
-    # 5. Save Metadata to CSV
-    # This CSV will be used by the Dataset class in PyTorch
-    df = pd.DataFrame(metadata)
-    csv_path = os.path.join('data', 'processed', 'metadata.csv')
-    df.to_csv(csv_path, index=False)
+        try:
+            image = Image.open(img_path).convert('RGB')
+        except (OSError, FileNotFoundError):
+            print(f"Warning: Skipping corrupted image: {img_path}")
+            # Return the next image instead to avoid crash
+            return self.__getitem__((idx + 1) % len(self))
+
+        # Get label using column name 'label'
+        label = int(row['label'])
+
+        if self.transform:
+            image = self.transform(image)
+
+        return image, label
+
+def get_data_loaders(data_dir, batch_size=32, num_workers=2):
+    """
+    Creates DataLoaders for Train, Validation, and Test sets.
+    """
     
-    print("\n--- Data Processing Complete ---")
-    print(f"Total images processed: {len(df)}")
-    print(f"Balanced dataset saved to: {PROCESSED_DATA_DIR}")
-    print(f"Metadata CSV saved to: {csv_path}")
+    # ImageNet Standard Mean and Std
+    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                     std=[0.229, 0.224, 0.225])
+
+    # Training Transforms (with Augmentation placeholders)
+    train_transform = transforms.Compose([
+        transforms.Resize((256, 256)),        
+        transforms.CenterCrop(224),           
+        # transforms.RandomHorizontalFlip(),  # Uncomment for Phase 2
+        transforms.ToTensor(),
+        normalize
+    ])
+
+    # Validation/Test Transforms
+    val_transform = transforms.Compose([
+        transforms.Resize((256, 256)),
+        transforms.CenterCrop(224),
+        transforms.ToTensor(),
+        normalize
+    ])
+
+    # CSV Paths
+    splits_dir = os.path.join(data_dir, 'processed', 'splits')
+    
+    # Datasets
+    train_dataset = ArtDataset(
+        csv_file=os.path.join(splits_dir, 'train.csv'),
+        root_dir='.', 
+        transform=train_transform
+    )
+    
+    val_dataset = ArtDataset(
+        csv_file=os.path.join(splits_dir, 'val.csv'),
+        root_dir='.',
+        transform=val_transform
+    )
+    
+    test_dataset = ArtDataset(
+        csv_file=os.path.join(splits_dir, 'test.csv'),
+        root_dir='.',
+        transform=val_transform
+    )
+
+    # DataLoaders (num_workers=0 for Windows safety)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=0)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=0)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=0)
+
+    print(f"DataLoaders Created:")
+    print(f"   - Train Batches: {len(train_loader)}")
+    print(f"   - Val Batches:   {len(val_loader)}")
+    print(f"   - Test Batches:  {len(test_loader)}")
+
+    return train_loader, val_loader, test_loader
 
 if __name__ == "__main__":
-    # Set random seed for reproducibility (Scientific requirement)
-    random.seed(42)
-    balance_and_process_dataset()
+    # Test the loader independently
+    loaders = get_data_loaders(data_dir='data', batch_size=16)
+    
+    # Fetch one batch to verify
+    try:
+        images, labels = next(iter(loaders[0]))
+        print(f"\nBatch Verification:")
+        print(f"   - Image Batch Shape: {images.shape} (Batch, Channel, Height, Width)")
+        print(f"   - Label Batch Shape: {labels.shape}")
+        print("   - Sample Labels:", labels[:5].tolist())
+    except Exception as e:
+        print(f"\nTest Failed: {e}")

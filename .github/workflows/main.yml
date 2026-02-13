@@ -1,0 +1,41 @@
+name: CI Pipeline
+
+# Trigger on push to main or phase-2 branches
+on:
+  push:
+    branches: [ "main", "phase-2" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Checkout code
+    - uses: actions/checkout@v3
+
+    # 2. Set up Python
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.9"
+
+    # 3. Install Dependencies
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install flake8 pytest
+
+    # 4. Lint with flake8 (Check for syntax errors)
+    - name: Lint with flake8
+      run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 src --count --select=E9,F63,F7,F82 --show-source --statistics
+
+    # 5. Smoke Test (Check if model loads without crashing)
+    # We create a small python script on the fly to test model initialization
+    - name: Smoke Test - Model Initialization
+      run: |
+        python -c "from src.models.models import get_model; model = get_model('resnet50', num_classes=27); print('Model loaded successfully')"

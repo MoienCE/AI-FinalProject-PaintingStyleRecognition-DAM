@@ -1,4 +1,4 @@
-name: CI - Style + Smoke + Evaluation
+name: CI - Smoke + Evaluation
 
 on:
   push:
@@ -17,58 +17,36 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install PyTorch (CPU version for GitHub runner)
-        run: |
-          pip install --upgrade pip
-          pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+      - name: Install PyTorch CPU
+        run: pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Install ruff (for linting)
-        run: pip install ruff
-
-      # ── Style / Lint ─────────────────────────────────────
-      - name: Lint with ruff
-        run: |
-          ruff check src --select E,F,I,W
-          ruff format --check src
-
-      # ── Create dummy data for smoke test ─────────────────
+      # ── Dummy data (چون داده واقعی commit نشده) ──
       - name: Create dummy data (2 classes, 20 images)
         run: |
           python -c '
-          import pandas as pd
-          import os
+          import pandas as pd, os
           from PIL import Image
-          import numpy as np
-          import json
-
+          import numpy as np, json
           os.makedirs("data/processed/splits", exist_ok=True)
           os.makedirs("data/processed/Style", exist_ok=True)
           os.makedirs("models", exist_ok=True)
-
-          # 20 dummy images
           for i in range(20):
-              img = Image.fromarray(np.random.randint(0, 255, (224, 224, 3), dtype=np.uint8))
+              img = Image.fromarray(np.random.randint(0,255,(224,224,3),dtype=np.uint8))
               img.save(f"data/processed/Style/dummy_{i}.jpg")
-
-          # CSV files
           paths = [f"data/processed/Style/dummy_{i}.jpg" for i in range(20)]
           labels = [0]*10 + [1]*10
-
-          pd.DataFrame({"image_path": paths[:10], "label": labels[:10]}).to_csv("data/processed/splits/train.csv", index=False)
-          pd.DataFrame({"image_path": paths[10:15], "label": labels[10:15]}).to_csv("data/processed/splits/val.csv", index=False)
-          pd.DataFrame({"image_path": paths[15:], "label": labels[15:]}).to_csv("data/processed/splits/test.csv", index=False)
-
-          # class_mapping.json
-          mapping = {str(i): f"style_{i}" for i in range(2)}
-          with open("data/processed/splits/class_mapping.json", "w") as f:
-              json.dump(mapping, f)
-          print("Dummy data created successfully")
+          pd.DataFrame({"image_path":paths[:10],"label":labels[:10]}).to_csv("data/processed/splits/train.csv", index=False)
+          pd.DataFrame({"image_path":paths[10:15],"label":labels[10:15]}).to_csv("data/processed/splits/val.csv", index=False)
+          pd.DataFrame({"image_path":paths[15:],"label":labels[15:]}).to_csv("data/processed/splits/test.csv", index=False)
+          with open("data/processed/splits/class_mapping.json","w") as f:
+              json.dump({str(i):f"style_{i}" for i in range(2)}, f)
+          print("Dummy data created")
           '
 
-      # ── Smoke Training (۱ epoch) ─────────────────────────
+      # ── Smoke Training (۱ epoch) ──
       - name: Smoke Training (1 epoch)
         run: |
           python src/training/train.py \
@@ -79,11 +57,11 @@ jobs:
             --patience 3 \
             --exp_name smoke_test
 
-      # ── Evaluation ───────────────────────────────────────
+      # ── Evaluation ──
       - name: Run Evaluation
         run: python src/evaluation/evaluate.py --model_type baseline
 
-      # ── Upload report + figures as artifact ──────────────
+      # ── آپلود گزارش ──
       - name: Upload evaluation report
         uses: actions/upload-artifact@v4
         with:

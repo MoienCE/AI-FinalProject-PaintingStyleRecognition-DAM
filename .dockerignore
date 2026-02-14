@@ -1,0 +1,34 @@
+# --- Version Control ---
+.git
+.github
+.gitignore
+
+# --- Python & Logs ---
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+wandb/
+*.log
+
+notebooks/
+.ipynb_checkpoints
+
+art-ui/node_modules
+art-ui/dist
+art-ui/build
+art-ui/.vite
+art-ui/.vite-temp
+
+results/
+Documents/
+
+data/raw/
+
+data/processed/*
+
+!data/processed/splits/

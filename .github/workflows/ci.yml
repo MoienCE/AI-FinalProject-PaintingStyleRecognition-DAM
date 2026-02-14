@@ -1,79 +1,116 @@
-name: CI - Smoke + Evaluation
+name: CI - Smoke Test (ResNet50)
 
 on:
   push:
-    branches: [ phase-2 ]
+    branches: [ "phase-2", "main", "master" ]
+  pull_request:
+    branches: [ "phase-2", "main", "master" ]
 
 jobs:
   ci:
     runs-on: ubuntu-latest
+    
+    env:
+      WANDB_MODE: disabled
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.10'
+
+      - name: Cache pip
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
 
       - name: Install PyTorch (CPU)
         run: pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      # ── Dummy data با ۲ کلاس (برای جلوگیری از خطای num_classes=1) ──
-      - name: Create dummy data (2 classes, 20 images)
         run: |
-          python -c '
+          pip install pandas numpy pillow scikit-learn tqdm matplotlib seaborn wandb flask flask-cors tensorboard
+
+      # ── ساخت داده ساختگی (اصلاح شده: لیبل‌های ترکیبی) ──
+      - name: Generate Dummy Data Script
+        run: |
+          cat <<EOF > create_dummy.py
           import pandas as pd, os
           from PIL import Image
           import numpy as np, json
+
+          # Create directories
           os.makedirs("data/processed/splits", exist_ok=True)
-          os.makedirs("data/processed/Style", exist_ok=True)
+          os.makedirs("data/processed/Style_A", exist_ok=True)
+          os.makedirs("data/processed/Style_B", exist_ok=True)
           os.makedirs("models", exist_ok=True)
+          os.makedirs("results/runs", exist_ok=True)
 
-          # 20 تصویر 224x224
+          paths = []
+          labels = []
+
+          # Generate 20 random images (224x224)
           for i in range(20):
-              img = Image.fromarray(np.random.randint(0,255,(224,224,3),dtype=np.uint8))
-              img.save(f"data/processed/Style/dummy_{i}.jpg")
+              # FIX: لیبل‌ها را یکی در میان تولید می‌کنیم (0, 1, 0, 1)
+              # تا مطمئن شویم در داده‌های تست هر دو کلاس وجود دارند
+              label = i % 2 
+              style = "Style_A" if label == 0 else "Style_B"
+              
+              img = Image.fromarray(np.random.randint(0, 255, (224, 224, 3), dtype=np.uint8))
+              path = f"data/processed/{style}/dummy_{i}.jpg"
+              img.save(path)
+              paths.append(path)
+              labels.append(label)
 
-          paths = [f"data/processed/Style/dummy_{i}.jpg" for i in range(20)]
+          # Create CSV splits
+          # با این روش تقسیم، در Test set هم کلاس 0 داریم هم 1
+          df = pd.DataFrame({"image_path": paths, "label": labels})
+          df.iloc[:12].to_csv("data/processed/splits/train.csv", index=False)
+          df.iloc[12:16].to_csv("data/processed/splits/val.csv", index=False)
+          df.iloc[16:].to_csv("data/processed/splits/test.csv", index=False)
 
-          # ۲ کلاس در همهٔ splitها
-          train_labels = [0]*5 + [1]*5
-          val_labels   = [0]*2 + [1]*3
-          test_labels  = [0]*2 + [1]*3
+          # Create mapping file
+          with open("data/processed/splits/class_mapping.json", "w") as f:
+              json.dump({"0": "Style_A", "1": "Style_B"}, f)
 
-          pd.DataFrame({"image_path":paths[:10], "label":train_labels}).to_csv("data/processed/splits/train.csv", index=False)
-          pd.DataFrame({"image_path":paths[10:15],"label":val_labels}).to_csv("data/processed/splits/val.csv", index=False)
-          pd.DataFrame({"image_path":paths[15:],"label":test_labels}).to_csv("data/processed/splits/test.csv", index=False)
+          print("✅ Dummy data created successfully (Balanced Labels).")
+          EOF
 
-          with open("data/processed/splits/class_mapping.json","w") as f:
-              json.dump({"0":"style_0", "1":"style_1"}, f)
-          print("Dummy data (2 classes) created")
-          '
+      - name: Run Dummy Data Generation
+        run: python create_dummy.py
 
-      # ── Smoke Training با resnet50 (۱ epoch) ──
-      - name: Smoke Training (1 epoch)
+      # ── Smoke Training (ResNet50) ──
+      - name: Smoke Training (ResNet50)
         run: |
-          python src/training/train.py \
+          python src/training/fine_tune.py \
             --model_type resnet50 \
             --epochs 1 \
-            --batch_size 8 \
+            --batch_size 4 \
             --lr 1e-3 \
-            --patience 3 \
-            --exp_name smoke_test
+            --num_workers 0 \
+            --exp_name ci_smoke_resnet
 
-      # ── Evaluation ──
+      # ── Evaluation (ResNet50) ──
       - name: Run Evaluation
-        run: python src/evaluation/evaluate.py --model_type resnet50
+        run: |
+          python src/evaluation/evaluate.py --model_type resnet50
 
-      # ── آپلود گزارش ──
+      # ── API Test ──
+      - name: Smoke Test API Code
+        run: |
+          python -c "from src.models.models import get_model; print('API Model Import OK')"
+
+      # ── Artifacts ──
       - name: Upload evaluation report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: evaluation-report
+          name: evaluation-results
           path: results/
           retention-days: 7

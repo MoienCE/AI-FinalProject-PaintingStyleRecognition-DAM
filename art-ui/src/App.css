@@ -1,0 +1,125 @@
+body {
+  background-color: #1a1a2e;
+  color: #fff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.container {
+  text-align: center;
+  width: 100%;
+  max-width: 600px;
+  padding: 40px 20px;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #ff8a00, #e52e71);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.upload-section {
+  background: #16213e;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  margin-bottom: 20px;
+}
+
+.hidden-input {
+  display: none;
+}
+
+.upload-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #0f3460;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid #e94560;
+  transition: 0.3s;
+}
+
+.upload-btn:hover {
+  background: #e94560;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 10px;
+  margin-top: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+
+.analyze-btn {
+  margin-top: 20px;
+  padding: 12px 30px;
+  background: #e94560;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.analyze-btn:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+.result-section {
+  background: #16213e;
+  padding: 30px;
+  border-radius: 20px;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.badge {
+  background: #e94560;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: inline-block;
+  margin: 10px 0;
+}
+
+.confidence-bar-container {
+  background: #0f3460;
+  height: 10px;
+  border-radius: 5px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.confidence-bar {
+  background: #4cc9f0;
+  height: 100%;
+  transition: width 1s ease-in-out;
+}
+
+.alt-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #333;
+  color: #ccc;
+}
+
+.error-msg {
+  color: #ff4757;
+  margin-top: 10px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}

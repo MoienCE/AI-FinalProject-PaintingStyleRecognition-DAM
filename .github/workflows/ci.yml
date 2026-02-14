@@ -10,7 +10,6 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     
-    # غیرفعال کردن WandB
     env:
       WANDB_MODE: disabled
 
@@ -35,11 +34,10 @@ jobs:
         run: pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 
       - name: Install dependencies
-        # tensorboard هم اضافه شده
         run: |
           pip install pandas numpy pillow scikit-learn tqdm matplotlib seaborn wandb flask flask-cors tensorboard
 
-      # ── ساخت داده ساختگی (224x224 برای ResNet) ──
+      # ── ساخت داده ساختگی (224x224 استاندارد) ──
       - name: Generate Dummy Data Script
         run: |
           cat <<EOF > create_dummy.py
@@ -57,7 +55,7 @@ jobs:
           paths = []
           labels = []
 
-          # Generate 20 random images (224x224 standard size)
+          # Generate 20 random images (224x224)
           for i in range(20):
               style = "Style_A" if i < 10 else "Style_B"
               label = 0 if i < 10 else 1
@@ -77,14 +75,13 @@ jobs:
           with open("data/processed/splits/class_mapping.json", "w") as f:
               json.dump({"0": "Style_A", "1": "Style_B"}, f)
 
-          print("✅ Dummy data (224x224) created successfully.")
+          print("✅ Dummy data created successfully.")
           EOF
 
       - name: Run Dummy Data Generation
         run: python create_dummy.py
 
       # ── Smoke Training (ResNet50) ──
-      # نکته: از resnet50 استفاده می‌کنیم تا با کدهای قدیمی سازگار باشد
       - name: Smoke Training (ResNet50)
         run: |
           python src/training/fine_tune.py \
@@ -95,12 +92,11 @@ jobs:
             --num_workers 0 \
             --exp_name ci_smoke_resnet
 
-      # ── Evaluation (ResNet50) ──
+      # ── Evaluation (ResNet50) - FIXED ──
+      # تغییر: حذف --batch_size چون کد شما آن را ندارد
       - name: Run Evaluation
         run: |
-          python src/evaluation/evaluate.py \
-            --model_type resnet50 \
-            --batch_size 4
+          python src/evaluation/evaluate.py --model_type resnet50
 
       # ── API Test ──
       - name: Smoke Test API Code

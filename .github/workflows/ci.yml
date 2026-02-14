@@ -2,9 +2,9 @@ name: CI - EfficientNet Pipeline
 
 on:
   push:
-    branches: [ phase-2, main, master ]
+    branches: [ "phase-2", "main", "master" ]
   pull_request:
-    branches: [ phase-2, main, master ]
+    branches: [ "phase-2", "main", "master" ]
 
 jobs:
   ci:
@@ -37,14 +37,14 @@ jobs:
         run: |
           pip install pandas numpy pillow scikit-learn tqdm matplotlib seaborn wandb flask flask-cors tensorboard
 
-      # ── Dummy Data (Updated for B3) ──
-      - name: Create dummy data (384x384, 2 classes)
+      - name: Generate Dummy Data Script
         run: |
-          python -c '
+          cat <<EOF > create_dummy.py
           import pandas as pd, os
           from PIL import Image
           import numpy as np, json
-          
+
+          # Create directories
           os.makedirs("data/processed/splits", exist_ok=True)
           os.makedirs("data/processed/Style_A", exist_ok=True)
           os.makedirs("data/processed/Style_B", exist_ok=True)
@@ -53,32 +53,34 @@ jobs:
 
           paths = []
           labels = []
-          
+
+          # Generate 20 random images (384x384)
           for i in range(20):
               style = "Style_A" if i < 10 else "Style_B"
               label = 0 if i < 10 else 1
-              
               img = Image.fromarray(np.random.randint(0, 255, (384, 384, 3), dtype=np.uint8))
               path = f"data/processed/{style}/dummy_{i}.jpg"
               img.save(path)
-              
               paths.append(path)
               labels.append(label)
 
-          # Train: 12, Val: 4, Test: 4
+          # Create CSV splits
           df = pd.DataFrame({"image_path": paths, "label": labels})
-          
           df.iloc[:12].to_csv("data/processed/splits/train.csv", index=False)
           df.iloc[12:16].to_csv("data/processed/splits/val.csv", index=False)
           df.iloc[16:].to_csv("data/processed/splits/test.csv", index=False)
 
+          # Create mapping file
           with open("data/processed/splits/class_mapping.json", "w") as f:
               json.dump({"0": "Style_A", "1": "Style_B"}, f)
-              
-          print("✅ Dummy data (384x384) created successfully.")
-          '
 
-      # ── Smoke Training (EfficientNet-B3) ──
+          print("✅ Dummy data (384x384) created successfully.")
+          EOF
+
+      - name: Run Dummy Data Generation
+        run: python create_dummy.py
+
+      # ── Smoke Training ──
       - name: Smoke Training (Fine-Tune B3)
         run: |
           python src/training/fine_tune.py \
@@ -96,13 +98,12 @@ jobs:
             --model_type efficientnet_b3 \
             --batch_size 4
 
-      # ── API Test (Optional) ──
-      
+      # ── API Test ──
       - name: Smoke Test API Code
         run: |
           python -c "from src.models.models import get_model; print('API Model Import OK')"
 
-      
+      # ── Artifacts ──
       - name: Upload evaluation report
         if: always()
         uses: actions/upload-artifact@v4

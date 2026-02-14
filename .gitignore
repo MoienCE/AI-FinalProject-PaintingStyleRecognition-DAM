@@ -1,22 +1,12 @@
 data/processed/*
 !data/processed/notes.txt
 !data/processed/splits/
+!data/processed/splits/*.csv
+!data/processed/splits/class_mapping.json
 
 data/raw/*
 !data/raw/notes.txt
 
-src/models/*
-!src/models/notes.txt
-
-
-*.pt
-*.pth
-*.h5
-*.pkl
-*.jpg
-
-
-__pycache__/
-
-.ipynb_checkpoints/
-.DS_Store
+src/models/*.pth
+src/models/*.pt
+src/models/*.h5

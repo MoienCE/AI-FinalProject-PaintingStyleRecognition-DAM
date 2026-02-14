@@ -1,0 +1,70 @@
+_wandb:
+    value:
+        cli_version: 0.25.0
+        e:
+            7isz25i53bzwcat8u5goc2adpovefhx8:
+                codePath: src\training\fine_tune.py
+                codePathLocal: src\training\fine_tune.py
+                cpu_count: 10
+                cpu_count_logical: 16
+                cudaVersion: "12.6"
+                disk:
+                    /:
+                        total: "313513734144"
+                        used: "280969142272"
+                email: arshiaabedice@gmail.com
+                executable: C:\Users\AM\anaconda3\envs\art_project\python.exe
+                git:
+                    commit: 92e6f4725ccfd3843c8bb8eddebd4f6e537c4241
+                    remote: https://github.com/MoienCE/AI-FinalProject-PaintingStyleRecognition-DAM.git
+                gpu: NVIDIA GeForce RTX 4060 Laptop GPU
+                gpu_count: 1
+                gpu_nvidia:
+                    - architecture: Ada
+                      cudaCores: 3072
+                      memoryTotal: "8585740288"
+                      name: NVIDIA GeForce RTX 4060 Laptop GPU
+                      uuid: GPU-9e8322be-5977-55c0-8a74-a70e40c22bf0
+                host: DESKTOP-03FPFKD
+                memory:
+                    total: "34070388736"
+                os: Windows-10-10.0.26100-SP0
+                program: C:\Computer Engineering\Term7\AI Project\AI-FinalProject-PaintingStyleRecognition-DAM\src\training\fine_tune.py
+                python: CPython 3.10.19
+                root: C:\Computer Engineering\Term7\AI Project\AI-FinalProject-PaintingStyleRecognition-DAM
+                startedAt: "2026-02-14T06:04:38.068774Z"
+                writerId: 7isz25i53bzwcat8u5goc2adpovefhx8
+        m: []
+        python_version: 3.10.19
+        t:
+            "1":
+                - 1
+                - 41
+                - 105
+            "2":
+                - 1
+                - 41
+                - 105
+            "3":
+                - 1
+                - 2
+                - 13
+                - 16
+            "4": 3.10.19
+            "5": 0.25.0
+            "8":
+                - 3
+            "12": 0.25.0
+            "13": windows-amd64
+batch_size:
+    value: 32
+epochs:
+    value: 50
+exp_name:
+    value: v7_b3_max_power_wandb
+lr:
+    value: 0.0002
+model_type:
+    value: efficientnet_b3
+num_workers:
+    value: 4

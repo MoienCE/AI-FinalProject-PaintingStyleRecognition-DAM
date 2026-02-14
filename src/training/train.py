@@ -10,17 +10,17 @@ from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 import numpy as np
 
-# افزودن مسیر روت پروژه به سیستم تا پکیج src شناسایی شود
+# Add project root path to system so 'src' package is recognized
 sys.path.append(os.getcwd())
 
-# --- ایمپورت‌های اصلاح شده طبق ساختار پوشه‌بندی جدید ---
+# --- Modified imports according to new folder structure ---
 from src.preprocessing.dataset import create_dataloaders
 from src.models.models import get_model
 from src.utils.utils import set_seed, save_metrics
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-# --- کلاس Early Stopping (طبق الزام image_5c8afd.png) ---
+# --- Early Stopping Class (per requirement image_5c8afd.png) ---
 class EarlyStopping:
     """Stops training if validation accuracy doesn't improve after a given patience."""
     def __init__(self, patience=5, verbose=False, delta=0):
@@ -54,7 +54,7 @@ class EarlyStopping:
         torch.save(model.state_dict(), path)
         self.best_score = val_acc
 
-# --- توابع حلقه آموزش ---
+# --- Training Loop Functions ---
 def train_one_epoch(model, dataloader, criterion, optimizer, device):
     model.train()
     running_loss = 0.0
@@ -97,46 +97,46 @@ def validate(model, dataloader, criterion, device):
             
     return running_loss / total, correct / total
 
-# --- بدنه اصلی ---
+# --- Main Body ---
 def main(args):
-    # 1. تنظیمات اولیه
+    # 1. Initial Setup
     set_seed(42)
     os.makedirs(args.checkpoint_dir, exist_ok=True)
     
-    # 2. راه اندازی TensorBoard (الزام image_b01cbb.png)
+    # 2. Setup TensorBoard (requirement image_b01cbb.png)
     writer = SummaryWriter(log_dir=os.path.join("results", "runs", f"{args.model_type}_{args.exp_name}"))
     
-    # 3. بارگذاری داده
+    # 3. Load Data
     print("⏳ Loading Data...")
     dataloaders, datasets = create_dataloaders(
         splits_dir=os.path.join('data', 'processed', 'splits'),
         root_dir='.', 
         batch_size=args.batch_size
     )
-    # تشخیص خودکار تعداد کلاس‌ها
+    # Automatically detect number of classes
     num_classes = len(datasets['train'].data['label'].unique())
     print(f"✅ Data Loaded. Classes detected: {num_classes}")
 
-    # 4. ساخت مدل
+    # 4. Build Model
     print(f"🏗️ Initializing Model: {args.model_type}")
     model = get_model(args.model_type, num_classes=num_classes, device=DEVICE)
     
     criterion = nn.CrossEntropyLoss()
     
-    # 5. تنظیم Optimizer و Scheduler
+    # 5. Setup Optimizer and Scheduler
     if args.model_type == 'resnet50':
-        # برای Transfer Learning معمولا لرنینگ ریت پایین‌تر بهتر است
+        # Lower learning rate is usually better for Transfer Learning
         optimizer = optim.AdamW(model.parameters(), lr=args.lr, weight_decay=1e-2)
     else:
         optimizer = optim.Adam(model.parameters(), lr=args.lr)
         
-    # استفاده از Scheduler (یکی از روش‌های بهبود طبق image_5c8adb.png)
+    # Use Scheduler (one of the improvement methods per image_5c8adb.png)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='max', factor=0.1, patience=3)
     
-    # راه اندازی Early Stopping
+    # Initialize Early Stopping
     early_stopping = EarlyStopping(patience=args.patience, verbose=True)
 
-    # 6. حلقه آموزش
+    # 6. Training Loop
     history = {'train_loss': [], 'train_acc': [], 'val_loss': [], 'val_acc': []}
     
     print(f"🔥 Starting Training on {DEVICE}...")
@@ -178,12 +178,12 @@ def main(args):
             print("🛑 Early stopping triggered!")
             break
             
-    # پایان آموزش
+    # Training Complete
     time_elapsed = time.time() - start_time
     print(f"\n🏁 Training Complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s")
     print(f"Best Val Acc: {early_stopping.best_score:.4f}")
     
-    # ذخیره فایل هیستوری برای رسم نمودار در گام بعدی
+    # Save history file for plotting in the next step
     save_metrics(history, os.path.join("results", f"history_{args.model_type}.json"))
     writer.close()
 

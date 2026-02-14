@@ -1,0 +1,37 @@
+2026-02-13 20:03:14,613 INFO    MainThread:23152 [wandb_setup.py:_flush():81] Current SDK version is 0.25.0
+2026-02-13 20:03:14,613 INFO    MainThread:23152 [wandb_setup.py:_flush():81] Configure stats pid to 23152
+2026-02-13 20:03:14,613 INFO    MainThread:23152 [wandb_setup.py:_flush():81] Loading settings from environment variables
+2026-02-13 20:03:14,613 INFO    MainThread:23152 [wandb_init.py:setup_run_log_directory():717] Logging user logs to C:\Computer Engineering\Term7\AI Project\AI-FinalProject-PaintingStyleRecognition-DAM\wandb\run-20260213_200314-zets33gf\logs\debug.log
+2026-02-13 20:03:14,613 INFO    MainThread:23152 [wandb_init.py:setup_run_log_directory():718] Logging internal logs to C:\Computer Engineering\Term7\AI Project\AI-FinalProject-PaintingStyleRecognition-DAM\wandb\run-20260213_200314-zets33gf\logs\debug-internal.log
+2026-02-13 20:03:14,613 INFO    MainThread:23152 [wandb_init.py:init():844] calling init triggers
+2026-02-13 20:03:14,613 INFO    MainThread:23152 [wandb_init.py:init():849] wandb.init called with sweep_config: {}
+config: {'model_type': 'efficientnet_b3', 'epochs': 50, 'batch_size': 32, 'num_workers': 4, 'lr': 0.0002, 'exp_name': 'v7_b3_max_power_wandb', '_wandb': {}}
+2026-02-13 20:03:14,613 INFO    MainThread:23152 [wandb_init.py:init():892] starting backend
+2026-02-13 20:03:17,023 INFO    MainThread:23152 [wandb_init.py:init():895] sending inform_init request
+2026-02-13 20:03:17,047 INFO    MainThread:23152 [wandb_init.py:init():903] backend started and connected
+2026-02-13 20:03:17,092 INFO    MainThread:23152 [wandb_init.py:init():973] updated telemetry
+2026-02-13 20:03:17,142 INFO    MainThread:23152 [wandb_init.py:init():997] communicating run to backend with 90.0 second timeout
+2026-02-13 20:03:22,450 INFO    MainThread:23152 [wandb_init.py:init():1042] starting run threads in backend
+2026-02-13 20:03:22,879 INFO    MainThread:23152 [wandb_run.py:_console_start():2524] atexit reg
+2026-02-13 20:03:22,880 INFO    MainThread:23152 [wandb_run.py:_redirect():2373] redirect: wrap_raw
+2026-02-13 20:03:22,880 INFO    MainThread:23152 [wandb_run.py:_redirect():2442] Wrapping output streams.
+2026-02-13 20:03:22,881 INFO    MainThread:23152 [wandb_run.py:_redirect():2465] Redirects installed.
+2026-02-13 20:03:22,887 INFO    MainThread:23152 [wandb_init.py:init():1082] run started, returning control to user process
+2026-02-13 20:03:23,681 INFO    MainThread:23152 [wandb_watch.py:_watch():69] Watching
+2026-02-13 20:13:02,145 INFO    wandb-AsyncioManager-main:23152 [service_client.py:_forward_responses():134] Reached EOF.
+2026-02-13 20:13:02,145 INFO    wandb-AsyncioManager-main:23152 [mailbox.py:close():155] Closing mailbox, abandoning 1 handles.
+2026-02-13 20:13:03,424 ERROR   wandb-AsyncioManager-main:23152 [asyncio_manager.py:fn_wrap_exceptions():184] Uncaught exception in run_soon callback.
+Traceback (most recent call last):
+  File "C:\Users\AM\anaconda3\envs\art_project\lib\site-packages\wandb\sdk\lib\asyncio_manager.py", line 182, in fn_wrap_exceptions
+    await fn()
+  File "C:\Users\AM\anaconda3\envs\art_project\lib\site-packages\wandb\sdk\lib\service\service_client.py", line 45, in publish
+    await self._send_server_request(request)
+  File "C:\Users\AM\anaconda3\envs\art_project\lib\site-packages\wandb\sdk\lib\service\service_client.py", line 87, in _send_server_request
+    await self._drain_writer()
+  File "C:\Users\AM\anaconda3\envs\art_project\lib\site-packages\wandb\sdk\lib\service\service_client.py", line 96, in _drain_writer
+    await self._writer.drain()
+  File "C:\Users\AM\anaconda3\envs\art_project\lib\asyncio\streams.py", line 371, in drain
+    await self._protocol._drain_helper()
+  File "C:\Users\AM\anaconda3\envs\art_project\lib\asyncio\streams.py", line 167, in _drain_helper
+    raise ConnectionResetError('Connection lost')
+ConnectionResetError: Connection lost

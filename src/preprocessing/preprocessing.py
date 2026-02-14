@@ -8,7 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 
 # --- Configuration Constants ---
 # Based on EDA findings and ImageNet standards
-IMG_SIZE = 224
+IMG_SIZE = 384
 MEAN = [0.485, 0.456, 0.406]
 STD = [0.229, 0.224, 0.225]
 
@@ -117,7 +117,8 @@ def get_transforms(stage='train'):
 
 if __name__ == "__main__":
     # Define paths based on project structure
-    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # Go up one level
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    
     METADATA_FILE = os.path.join(BASE_DIR, 'data', 'processed', 'metadata.csv')
     OUTPUT_SPLITS = os.path.join(BASE_DIR, 'data', 'processed', 'splits')
     

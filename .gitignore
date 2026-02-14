@@ -5,7 +5,7 @@ data/processed/*
 data/raw/*
 !data/raw/notes.txt
 
-src/models/*
+!src/models/*
 !src/models/notes.txt
 
 

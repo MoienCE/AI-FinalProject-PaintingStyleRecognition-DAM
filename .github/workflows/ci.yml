@@ -35,7 +35,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pandas numpy pillow scikit-learn tqdm matplotlib seaborn wandb flask flask-cors
+          pip install pandas numpy pillow scikit-learn tqdm matplotlib seaborn wandb flask flask-cors tensorboard
 
       # ── Dummy Data (Updated for B3) ──
       - name: Create dummy data (384x384, 2 classes)

@@ -37,7 +37,7 @@ jobs:
         run: |
           pip install pandas numpy pillow scikit-learn tqdm matplotlib seaborn wandb flask flask-cors tensorboard
 
-      # ── ساخت داده ساختگی (224x224 استاندارد) ──
+      # ── ساخت داده ساختگی (اصلاح شده: لیبل‌های ترکیبی) ──
       - name: Generate Dummy Data Script
         run: |
           cat <<EOF > create_dummy.py
@@ -57,8 +57,11 @@ jobs:
 
           # Generate 20 random images (224x224)
           for i in range(20):
-              style = "Style_A" if i < 10 else "Style_B"
-              label = 0 if i < 10 else 1
+              # FIX: لیبل‌ها را یکی در میان تولید می‌کنیم (0, 1, 0, 1)
+              # تا مطمئن شویم در داده‌های تست هر دو کلاس وجود دارند
+              label = i % 2 
+              style = "Style_A" if label == 0 else "Style_B"
+              
               img = Image.fromarray(np.random.randint(0, 255, (224, 224, 3), dtype=np.uint8))
               path = f"data/processed/{style}/dummy_{i}.jpg"
               img.save(path)
@@ -66,6 +69,7 @@ jobs:
               labels.append(label)
 
           # Create CSV splits
+          # با این روش تقسیم، در Test set هم کلاس 0 داریم هم 1
           df = pd.DataFrame({"image_path": paths, "label": labels})
           df.iloc[:12].to_csv("data/processed/splits/train.csv", index=False)
           df.iloc[12:16].to_csv("data/processed/splits/val.csv", index=False)
@@ -75,7 +79,7 @@ jobs:
           with open("data/processed/splits/class_mapping.json", "w") as f:
               json.dump({"0": "Style_A", "1": "Style_B"}, f)
 
-          print("✅ Dummy data created successfully.")
+          print("✅ Dummy data created successfully (Balanced Labels).")
           EOF
 
       - name: Run Dummy Data Generation
@@ -92,8 +96,7 @@ jobs:
             --num_workers 0 \
             --exp_name ci_smoke_resnet
 
-      # ── Evaluation (ResNet50) - FIXED ──
-      # تغییر: حذف --batch_size چون کد شما آن را ندارد
+      # ── Evaluation (ResNet50) ──
       - name: Run Evaluation
         run: |
           python src/evaluation/evaluate.py --model_type resnet50

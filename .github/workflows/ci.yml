@@ -1,4 +1,4 @@
-name: CI - EfficientNet Pipeline
+name: CI - Smoke Test (ResNet50)
 
 on:
   push:
@@ -10,6 +10,7 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     
+    # غیرفعال کردن WandB
     env:
       WANDB_MODE: disabled
 
@@ -34,9 +35,11 @@ jobs:
         run: pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 
       - name: Install dependencies
+        # tensorboard هم اضافه شده
         run: |
           pip install pandas numpy pillow scikit-learn tqdm matplotlib seaborn wandb flask flask-cors tensorboard
 
+      # ── ساخت داده ساختگی (224x224 برای ResNet) ──
       - name: Generate Dummy Data Script
         run: |
           cat <<EOF > create_dummy.py
@@ -54,11 +57,11 @@ jobs:
           paths = []
           labels = []
 
-          # Generate 20 random images (384x384)
+          # Generate 20 random images (224x224 standard size)
           for i in range(20):
               style = "Style_A" if i < 10 else "Style_B"
               label = 0 if i < 10 else 1
-              img = Image.fromarray(np.random.randint(0, 255, (384, 384, 3), dtype=np.uint8))
+              img = Image.fromarray(np.random.randint(0, 255, (224, 224, 3), dtype=np.uint8))
               path = f"data/processed/{style}/dummy_{i}.jpg"
               img.save(path)
               paths.append(path)
@@ -74,28 +77,29 @@ jobs:
           with open("data/processed/splits/class_mapping.json", "w") as f:
               json.dump({"0": "Style_A", "1": "Style_B"}, f)
 
-          print("✅ Dummy data (384x384) created successfully.")
+          print("✅ Dummy data (224x224) created successfully.")
           EOF
 
       - name: Run Dummy Data Generation
         run: python create_dummy.py
 
-      # ── Smoke Training ──
-      - name: Smoke Training (Fine-Tune B3)
+      # ── Smoke Training (ResNet50) ──
+      # نکته: از resnet50 استفاده می‌کنیم تا با کدهای قدیمی سازگار باشد
+      - name: Smoke Training (ResNet50)
         run: |
           python src/training/fine_tune.py \
-            --model_type efficientnet_b3 \
+            --model_type resnet50 \
             --epochs 1 \
             --batch_size 4 \
-            --lr 1e-4 \
+            --lr 1e-3 \
             --num_workers 0 \
-            --exp_name ci_smoke_test
+            --exp_name ci_smoke_resnet
 
-      # ── Evaluation ──
+      # ── Evaluation (ResNet50) ──
       - name: Run Evaluation
         run: |
           python src/evaluation/evaluate.py \
-            --model_type efficientnet_b3 \
+            --model_type resnet50 \
             --batch_size 4
 
       # ── API Test ──

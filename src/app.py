@@ -11,7 +11,7 @@ from models.models import get_model
 
 # --- Configuration ---
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-IMG_SIZE = 224
+IMG_SIZE = 384
 # We will use the EfficientNet model once trained, strictly adhering to phase-2
 MODEL_PATH = "models/best_model_efficientnet_b0.pth" 
 CLASS_MAPPING_PATH = "data/processed/splits/class_mapping.json"

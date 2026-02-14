@@ -25,6 +25,7 @@ class ArtDataset(Dataset):
             image = Image.open(img_path).convert('RGB')
         except Exception as e:
             print(f"Error loading {img_path}: {e}")
+            
             return self.__getitem__((idx - 1) % len(self))
             
         label = int(row['label'])
@@ -53,11 +54,9 @@ def get_sampler(dataset):
     sampler = WeightedRandomSampler(weights=sample_weights, num_samples=len(sample_weights), replacement=True)
     return sampler
 
-def create_dataloaders(splits_dir, root_dir, batch_size=32, num_workers=2, use_sampler=False):
+def create_dataloaders(splits_dir, root_dir, batch_size=32, num_workers=4, use_sampler=False):
     """
     Creates train, val, and test dataloaders.
-    Args:
-        use_sampler (bool): If True, applies WeightedRandomSampler to the training set.
     """
     datasets = {
         x: ArtDataset(
@@ -76,14 +75,19 @@ def create_dataloaders(splits_dir, root_dir, batch_size=32, num_workers=2, use_s
         train_sampler = None
         train_shuffle = True
         
+    use_persistent = True if num_workers > 0 else False
+
     dataloaders = {
         'train': DataLoader(datasets['train'], batch_size=batch_size, 
                           shuffle=train_shuffle, sampler=train_sampler, 
-                          num_workers=num_workers, pin_memory=True),
+                          num_workers=num_workers, pin_memory=True, 
+                          persistent_workers=use_persistent),
         'val': DataLoader(datasets['val'], batch_size=batch_size, shuffle=False, 
-                        num_workers=num_workers, pin_memory=True),
+                        num_workers=num_workers, pin_memory=True, 
+                        persistent_workers=use_persistent),
         'test': DataLoader(datasets['test'], batch_size=batch_size, shuffle=False, 
-                         num_workers=num_workers, pin_memory=True)
+                         num_workers=num_workers, pin_memory=True, 
+                         persistent_workers=use_persistent)
     }
     
     return dataloaders, datasets

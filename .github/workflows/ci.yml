@@ -17,13 +17,13 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Install PyTorch CPU
+      - name: Install PyTorch (CPU)
         run: pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # ── Dummy data (چون داده واقعی commit نشده) ──
+      # ── Dummy data با ۲ کلاس (برای جلوگیری از خطای num_classes=1) ──
       - name: Create dummy data (2 classes, 20 images)
         run: |
           python -c '
@@ -33,24 +33,33 @@ jobs:
           os.makedirs("data/processed/splits", exist_ok=True)
           os.makedirs("data/processed/Style", exist_ok=True)
           os.makedirs("models", exist_ok=True)
+
+          # 20 تصویر 224x224
           for i in range(20):
               img = Image.fromarray(np.random.randint(0,255,(224,224,3),dtype=np.uint8))
               img.save(f"data/processed/Style/dummy_{i}.jpg")
+
           paths = [f"data/processed/Style/dummy_{i}.jpg" for i in range(20)]
-          labels = [0]*10 + [1]*10
-          pd.DataFrame({"image_path":paths[:10],"label":labels[:10]}).to_csv("data/processed/splits/train.csv", index=False)
-          pd.DataFrame({"image_path":paths[10:15],"label":labels[10:15]}).to_csv("data/processed/splits/val.csv", index=False)
-          pd.DataFrame({"image_path":paths[15:],"label":labels[15:]}).to_csv("data/processed/splits/test.csv", index=False)
+
+          # ۲ کلاس در همهٔ splitها
+          train_labels = [0]*5 + [1]*5
+          val_labels   = [0]*2 + [1]*3
+          test_labels  = [0]*2 + [1]*3
+
+          pd.DataFrame({"image_path":paths[:10], "label":train_labels}).to_csv("data/processed/splits/train.csv", index=False)
+          pd.DataFrame({"image_path":paths[10:15],"label":val_labels}).to_csv("data/processed/splits/val.csv", index=False)
+          pd.DataFrame({"image_path":paths[15:],"label":test_labels}).to_csv("data/processed/splits/test.csv", index=False)
+
           with open("data/processed/splits/class_mapping.json","w") as f:
-              json.dump({str(i):f"style_{i}" for i in range(2)}, f)
-          print("Dummy data created")
+              json.dump({"0":"style_0", "1":"style_1"}, f)
+          print("Dummy data (2 classes) created")
           '
 
-      # ── Smoke Training (۱ epoch) ──
+      # ── Smoke Training با resnet50 (۱ epoch) ──
       - name: Smoke Training (1 epoch)
         run: |
           python src/training/train.py \
-            --model_type baseline \
+            --model_type resnet50 \
             --epochs 1 \
             --batch_size 8 \
             --lr 1e-3 \
@@ -59,7 +68,7 @@ jobs:
 
       # ── Evaluation ──
       - name: Run Evaluation
-        run: python src/evaluation/evaluate.py --model_type baseline
+        run: python src/evaluation/evaluate.py --model_type resnet50
 
       # ── آپلود گزارش ──
       - name: Upload evaluation report

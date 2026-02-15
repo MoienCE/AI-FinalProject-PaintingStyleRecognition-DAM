@@ -14,13 +14,14 @@ src/models/**
 !src/models/notes.txt
 
 # ====================== big files and wights ======================
-*.pt
-*.pth
-*.h5
-*.pkl
 *.jpg
 *.jpeg
 *.png
+
+!assets/images/
+!assets/images/*.jpg
+!assets/images/*.jpeg
+!assets/images/*.png
 
 # ====================== python and env ======================
 __pycache__/

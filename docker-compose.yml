@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # --- Backend Service ---
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: art_backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./models:/app/models  
+      - ./data/processed/splits:/app/data/processed/splits 
+    environment:
+      - PYTHONUNBUFFERED=1
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # --- Frontend Service ---
+  ui:
+    build:
+      context: ./art-ui
+      dockerfile: Dockerfile.ui
+    container_name: art_frontend
+    ports:
+      - "3000:80"  
+    depends_on:
+      - api

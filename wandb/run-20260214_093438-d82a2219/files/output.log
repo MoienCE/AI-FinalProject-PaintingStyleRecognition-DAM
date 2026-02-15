@@ -1,0 +1,273 @@
+⏳ Loading Data (Batch Size: 32)...
+⚖️ Using WeightedRandomSampler to fix Class Imbalance.
+✅ Classes detected: 27
+🏗️ Initializing efficientnet_b3...
+✅ Model (efficientnet_b3) Unfrozen: Last layers are now trainable.
+🔥 Starting Training (efficientnet_b3) for 50 epochs...
+
+Epoch 1/50
+                                                                                                                                                              
+LR: 0.000195
+Train Loss: 1.8708 | Acc: 0.5359
+Val   Loss: 1.8851 | Acc: 0.4961
+🏆 Best Model Saved! (Acc: 0.4961)
+
+Epoch 2/50
+LR: 0.000181
+Train Loss: 1.4869 | Acc: 0.6734
+Val   Loss: 1.7569 | Acc: 0.5543
+🏆 Best Model Saved! (Acc: 0.5543)
+
+Epoch 3/50
+LR: 0.000159
+Train Loss: 1.3548 | Acc: 0.7265
+Val   Loss: 1.7083 | Acc: 0.5758
+🏆 Best Model Saved! (Acc: 0.5758)
+
+Epoch 4/50
+LR: 0.000131
+Train Loss: 1.2764 | Acc: 0.7570
+Val   Loss: 1.6555 | Acc: 0.5993
+🏆 Best Model Saved! (Acc: 0.5993)
+
+Epoch 5/50
+LR: 0.000100
+Train Loss: 1.2084 | Acc: 0.7851
+Val   Loss: 1.6657 | Acc: 0.5963
+
+Epoch 6/50
+LR: 0.000069
+Train Loss: 1.1607 | Acc: 0.8044
+Val   Loss: 1.6432 | Acc: 0.6128
+🏆 Best Model Saved! (Acc: 0.6128)
+
+Epoch 7/50
+LR: 0.000041
+Train Loss: 1.1220 | Acc: 0.8199
+Val   Loss: 1.6132 | Acc: 0.6253
+🏆 Best Model Saved! (Acc: 0.6253)
+
+Epoch 8/50
+LR: 0.000019
+Train Loss: 1.0852 | Acc: 0.8344
+Val   Loss: 1.6120 | Acc: 0.6249
+
+Epoch 9/50
+LR: 0.000005
+Train Loss: 1.0675 | Acc: 0.8412
+Val   Loss: 1.5984 | Acc: 0.6296
+🏆 Best Model Saved! (Acc: 0.6296)
+
+Epoch 10/50
+LR: 0.000200
+Train Loss: 1.0610 | Acc: 0.8435
+Val   Loss: 1.5948 | Acc: 0.6322
+🏆 Best Model Saved! (Acc: 0.6322)
+
+Epoch 11/50
+LR: 0.000195
+Train Loss: 1.1212 | Acc: 0.8184
+Val   Loss: 1.6675 | Acc: 0.6099
+
+Epoch 12/50
+LR: 0.000181
+Train Loss: 1.1116 | Acc: 0.8238
+Val   Loss: 1.6493 | Acc: 0.6191
+
+Epoch 13/50
+LR: 0.000159
+Train Loss: 1.0790 | Acc: 0.8356
+Val   Loss: 1.6523 | Acc: 0.6171
+
+Epoch 14/50
+LR: 0.000131
+Train Loss: 1.0466 | Acc: 0.8488
+Val   Loss: 1.6377 | Acc: 0.6261
+
+Epoch 15/50
+LR: 0.000100
+Train Loss: 1.0135 | Acc: 0.8615
+Val   Loss: 1.6422 | Acc: 0.6277
+
+Epoch 16/50
+LR: 0.000069
+Train Loss: 0.9884 | Acc: 0.8724
+Val   Loss: 1.6278 | Acc: 0.6393
+🏆 Best Model Saved! (Acc: 0.6393)
+
+Epoch 17/50
+LR: 0.000041
+Train Loss: 0.9629 | Acc: 0.8819
+Val   Loss: 1.6288 | Acc: 0.6341
+
+Epoch 18/50
+LR: 0.000019
+Train Loss: 0.9373 | Acc: 0.8922
+Val   Loss: 1.6065 | Acc: 0.6443
+🏆 Best Model Saved! (Acc: 0.6443)
+
+Epoch 19/50
+LR: 0.000005
+Train Loss: 0.9267 | Acc: 0.8974
+Val   Loss: 1.6143 | Acc: 0.6464
+🏆 Best Model Saved! (Acc: 0.6464)
+
+Epoch 20/50
+LR: 0.000200
+Train Loss: 0.9261 | Acc: 0.8967
+Val   Loss: 1.5903 | Acc: 0.6461
+
+Epoch 21/50
+LR: 0.000195
+Train Loss: 0.9895 | Acc: 0.8719
+Val   Loss: 1.6696 | Acc: 0.6243
+
+Epoch 22/50
+LR: 0.000181
+Train Loss: 0.9856 | Acc: 0.8741
+Val   Loss: 1.6330 | Acc: 0.6368
+
+Epoch 23/50
+LR: 0.000159
+Train Loss: 0.9758 | Acc: 0.8774
+Val   Loss: 1.6442 | Acc: 0.6327
+
+Epoch 24/50
+LR: 0.000131
+Train Loss: 0.9488 | Acc: 0.8872
+Val   Loss: 1.6637 | Acc: 0.6312
+
+Epoch 25/50
+LR: 0.000100
+Train Loss: 0.9350 | Acc: 0.8924
+Val   Loss: 1.6416 | Acc: 0.6369
+
+Epoch 26/50
+LR: 0.000069
+Train Loss: 0.9059 | Acc: 0.9058
+Val   Loss: 1.6393 | Acc: 0.6404
+
+Epoch 27/50
+LR: 0.000041
+Train Loss: 0.8917 | Acc: 0.9097
+Val   Loss: 1.6429 | Acc: 0.6390
+
+Epoch 28/50
+LR: 0.000019
+Train Loss: 0.8732 | Acc: 0.9176
+Val   Loss: 1.6258 | Acc: 0.6487
+🏆 Best Model Saved! (Acc: 0.6487)
+
+Epoch 29/50
+LR: 0.000005
+Train Loss: 0.8605 | Acc: 0.9229
+Val   Loss: 1.6140 | Acc: 0.6551
+🏆 Best Model Saved! (Acc: 0.6551)
+
+Epoch 30/50
+LR: 0.000200
+Train Loss: 0.8556 | Acc: 0.9244
+Val   Loss: 1.6117 | Acc: 0.6559
+🏆 Best Model Saved! (Acc: 0.6559)
+
+Epoch 31/50
+LR: 0.000195
+Train Loss: 0.9162 | Acc: 0.9003
+Val   Loss: 1.6853 | Acc: 0.6311
+
+Epoch 32/50
+LR: 0.000181
+Train Loss: 0.9253 | Acc: 0.8977
+Val   Loss: 1.6695 | Acc: 0.6310
+
+Epoch 33/50
+LR: 0.000159
+Train Loss: 0.9127 | Acc: 0.9007
+Val   Loss: 1.6717 | Acc: 0.6317
+
+Epoch 34/50
+LR: 0.000131
+Train Loss: 0.9015 | Acc: 0.9077
+Val   Loss: 1.7092 | Acc: 0.6357
+
+Epoch 35/50
+LR: 0.000100
+Train Loss: 0.8822 | Acc: 0.9132
+Val   Loss: 1.6786 | Acc: 0.6397
+
+Epoch 36/50
+LR: 0.000069
+Train Loss: 0.8583 | Acc: 0.9231
+Val   Loss: 1.6364 | Acc: 0.6501
+
+Epoch 37/50
+LR: 0.000041
+Train Loss: 0.8447 | Acc: 0.9272
+Val   Loss: 1.6391 | Acc: 0.6497
+
+Epoch 38/50
+LR: 0.000019
+Train Loss: 0.8322 | Acc: 0.9305
+Val   Loss: 1.6284 | Acc: 0.6537
+
+Epoch 39/50
+LR: 0.000005
+Train Loss: 0.8251 | Acc: 0.9348
+Val   Loss: 1.6395 | Acc: 0.6555
+
+Epoch 40/50
+LR: 0.000200
+Train Loss: 0.8173 | Acc: 0.9383
+Val   Loss: 1.6305 | Acc: 0.6593
+🏆 Best Model Saved! (Acc: 0.6593)
+
+Epoch 41/50
+LR: 0.000195
+Train Loss: 0.8781 | Acc: 0.9141
+Val   Loss: 1.7040 | Acc: 0.6309
+
+Epoch 42/50
+LR: 0.000181
+Train Loss: 0.8872 | Acc: 0.9097
+Val   Loss: 1.6968 | Acc: 0.6325
+
+Epoch 43/50
+LR: 0.000159
+Train Loss: 0.8780 | Acc: 0.9154
+Val   Loss: 1.7033 | Acc: 0.6254
+
+Epoch 44/50
+LR: 0.000131
+Train Loss: 0.8671 | Acc: 0.9192
+Val   Loss: 1.7045 | Acc: 0.6351
+
+Epoch 45/50
+LR: 0.000100
+Train Loss: 0.8523 | Acc: 0.9241
+Val   Loss: 1.6941 | Acc: 0.6359
+
+Epoch 46/50
+LR: 0.000069
+Train Loss: 0.8350 | Acc: 0.9306
+Val   Loss: 1.6650 | Acc: 0.6477
+
+Epoch 47/50
+LR: 0.000041
+Train Loss: 0.8195 | Acc: 0.9373
+Val   Loss: 1.6584 | Acc: 0.6549
+
+Epoch 48/50
+LR: 0.000019
+Train Loss: 0.8064 | Acc: 0.9418
+Val   Loss: 1.6499 | Acc: 0.6576
+
+Epoch 49/50
+LR: 0.000005
+Train Loss: 0.7994 | Acc: 0.9450
+Val   Loss: 1.6465 | Acc: 0.6603
+🏆 Best Model Saved! (Acc: 0.6603)
+
+Epoch 50/50
+LR: 0.000200
+Train Loss: 0.7961 | Acc: 0.9450
+Val   Loss: 1.6498 | Acc: 0.6569

@@ -1,20 +1,33 @@
-data/processed/*
+# ====================== datas ======================
+data/processed/**
 !data/processed/notes.txt
+!data/processed/splits/**
+!data/processed/splits/*.csv
+!data/processed/splits/class_mapping.json
 
-data/raw/*
+data/raw/**
 !data/raw/notes.txt
 
-src/models/*
+# ====================== models======================
+src/models/**
+!src/models/models.py
 !src/models/notes.txt
 
-
-*.pt
-*.pth
-*.h5
-*.pkl
+# ====================== big files and wights ======================
 *.jpg
+*.jpeg
+*.png
 
+!assets/images/
+!assets/images/*.jpg
+!assets/images/*.jpeg
+!assets/images/*.png
 
+# ====================== python and env ======================
 __pycache__/
+*.pyc
+*.pyo
 
+# ====================== other... ======================
 .ipynb_checkpoints/
+.DS_Store

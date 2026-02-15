@@ -1,0 +1,177 @@
+{
+    "Abstract_Expressionism": {
+        "precision": 0.4125560538116592,
+        "recall": 0.6133333333333333,
+        "f1-score": 0.4932975871313673,
+        "support": 150.0
+    },
+    "Action_painting": {
+        "precision": 0.5,
+        "recall": 0.26666666666666666,
+        "f1-score": 0.34782608695652173,
+        "support": 15.0
+    },
+    "Analytical_Cubism": {
+        "precision": 1.0,
+        "recall": 0.7058823529411765,
+        "f1-score": 0.8275862068965517,
+        "support": 17.0
+    },
+    "Art_Nouveau_Modern": {
+        "precision": 0.5339805825242718,
+        "recall": 0.36666666666666664,
+        "f1-score": 0.43478260869565216,
+        "support": 150.0
+    },
+    "Baroque": {
+        "precision": 0.48672566371681414,
+        "recall": 0.36666666666666664,
+        "f1-score": 0.41825095057034223,
+        "support": 150.0
+    },
+    "Color_Field_Painting": {
+        "precision": 0.7457627118644068,
+        "recall": 0.5866666666666667,
+        "f1-score": 0.6567164179104478,
+        "support": 150.0
+    },
+    "Contemporary_Realism": {
+        "precision": 0.47297297297297297,
+        "recall": 0.4861111111111111,
+        "f1-score": 0.4794520547945205,
+        "support": 72.0
+    },
+    "Cubism": {
+        "precision": 0.5284090909090909,
+        "recall": 0.62,
+        "f1-score": 0.5705521472392638,
+        "support": 150.0
+    },
+    "Early_Renaissance": {
+        "precision": 0.71875,
+        "recall": 0.7666666666666667,
+        "f1-score": 0.7419354838709677,
+        "support": 150.0
+    },
+    "Expressionism": {
+        "precision": 0.28160919540229884,
+        "recall": 0.32666666666666666,
+        "f1-score": 0.30246913580246915,
+        "support": 150.0
+    },
+    "Fauvism": {
+        "precision": 0.6526315789473685,
+        "recall": 0.44285714285714284,
+        "f1-score": 0.5276595744680851,
+        "support": 140.0
+    },
+    "High_Renaissance": {
+        "precision": 0.5103448275862069,
+        "recall": 0.49333333333333335,
+        "f1-score": 0.5016949152542373,
+        "support": 150.0
+    },
+    "Impressionism": {
+        "precision": 0.34558823529411764,
+        "recall": 0.6266666666666667,
+        "f1-score": 0.44549763033175355,
+        "support": 150.0
+    },
+    "Mannerism_Late_Renaissance": {
+        "precision": 0.4481132075471698,
+        "recall": 0.6333333333333333,
+        "f1-score": 0.5248618784530387,
+        "support": 150.0
+    },
+    "Minimalism": {
+        "precision": 0.6666666666666666,
+        "recall": 0.6666666666666666,
+        "f1-score": 0.6666666666666666,
+        "support": 150.0
+    },
+    "Naive_Art_Primitivism": {
+        "precision": 0.525974025974026,
+        "recall": 0.54,
+        "f1-score": 0.5328947368421053,
+        "support": 150.0
+    },
+    "New_Realism": {
+        "precision": 0.4444444444444444,
+        "recall": 0.425531914893617,
+        "f1-score": 0.43478260869565216,
+        "support": 47.0
+    },
+    "Northern_Renaissance": {
+        "precision": 0.7628865979381443,
+        "recall": 0.49333333333333335,
+        "f1-score": 0.5991902834008097,
+        "support": 150.0
+    },
+    "Pointillism": {
+        "precision": 0.8309859154929577,
+        "recall": 0.7662337662337663,
+        "f1-score": 0.7972972972972973,
+        "support": 77.0
+    },
+    "Pop_Art": {
+        "precision": 0.5235294117647059,
+        "recall": 0.5933333333333334,
+        "f1-score": 0.55625,
+        "support": 150.0
+    },
+    "Post_Impressionism": {
+        "precision": 0.3739130434782609,
+        "recall": 0.2866666666666667,
+        "f1-score": 0.32452830188679244,
+        "support": 150.0
+    },
+    "Realism": {
+        "precision": 0.46846846846846846,
+        "recall": 0.3466666666666667,
+        "f1-score": 0.39846743295019155,
+        "support": 150.0
+    },
+    "Rococo": {
+        "precision": 0.6746031746031746,
+        "recall": 0.5666666666666667,
+        "f1-score": 0.6159420289855072,
+        "support": 150.0
+    },
+    "Romanticism": {
+        "precision": 0.367816091954023,
+        "recall": 0.4266666666666667,
+        "f1-score": 0.3950617283950617,
+        "support": 150.0
+    },
+    "Symbolism": {
+        "precision": 0.3884297520661157,
+        "recall": 0.31333333333333335,
+        "f1-score": 0.34686346863468637,
+        "support": 150.0
+    },
+    "Synthetic_Cubism": {
+        "precision": 0.6956521739130435,
+        "recall": 0.5,
+        "f1-score": 0.5818181818181818,
+        "support": 32.0
+    },
+    "Ukiyo_e": {
+        "precision": 0.8670886075949367,
+        "recall": 0.9133333333333333,
+        "f1-score": 0.8896103896103896,
+        "support": 150.0
+    },
+    "accuracy": 0.5264705882352941,
+    "macro avg": {
+        "precision": 0.5639963887013091,
+        "recall": 0.523701837828524,
+        "f1-score": 0.5337761408725393,
+        "support": 3400.0
+    },
+    "weighted avg": {
+        "precision": 0.5446295471848334,
+        "recall": 0.5264705882352941,
+        "f1-score": 0.5266041677664289,
+        "support": 3400.0
+    }
+}
